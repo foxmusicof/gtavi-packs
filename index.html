@@ -18,9 +18,17 @@ section{padding:86px 0;position:relative}.dark2{background:linear-gradient(180de
 .urgency{max-width:900px;margin:0 auto 32px;padding:20px;border:1px solid #ff4aab44;border-radius:18px;text-align:center;background:linear-gradient(90deg,#190817,#160b20)}.urgency b{color:#ff62b8}.count{font-size:24px;font-weight:1000}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.step{background:#100a15;border:1px solid #ffffff13;border-radius:18px;padding:24px;text-align:center}.step-num{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#ff249e,#8e31ff);font-weight:1000;margin:0 auto 13px}.step h3{margin:0 0 7px}.step p{margin:0;color:#afa3b7;font-size:14px}
 .faq{max-width:900px;margin:auto}.faq details{background:#100a15;border:1px solid #ffffff12;border-radius:13px;padding:17px 19px;margin:10px 0}.faq summary{cursor:pointer;font-weight:900}.faq p{color:#b9adbf;margin:12px 0 0}.final{text-align:center;background:radial-gradient(circle at 50% 30%,#4c102f,#100719 45%,#08050f 80%);padding:90px 0}.final .scarcity{font-weight:1000;color:#ff6ab9;font-size:15px;letter-spacing:.5px}.final h2{max-width:900px;margin:15px auto}.final .sub{max-width:700px;margin:0 auto 25px;color:#ddd;font-size:19px}.final-actions{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:820px;margin:auto}.final-card{padding:22px;border:1px solid #ffffff17;border-radius:18px;background:#0e0814}.final-card h3{margin:0 0 5px}.final-card .price-mini{font-size:30px;font-weight:1000;margin-bottom:14px}.final-card .old{font-size:13px}.final-card .cta{width:100%}footer{border-top:1px solid #ffffff10;text-align:center;color:#7f7487;padding:30px 18px;font-size:12px;background:#060409}
 @media(max-width:850px){.grid,.samples,.steps{grid-template-columns:repeat(2,1fr)}.hero{min-height:780px}.compare,.final-actions{grid-template-columns:1fr}.hero h1{letter-spacing:-1px}}@media(max-width:560px){.wrap{width:min(100% - 26px,var(--max))}.grid,.samples,.steps{grid-template-columns:1fr}section{padding:62px 0}.hero{min-height:760px}.hero-video{width:min(330px,86vw)}.price{font-size:46px}.top{font-size:11px}}
+
+.offer-timer{position:sticky;top:0;z-index:60;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;padding:10px 16px;background:linear-gradient(90deg,#ff176f,#8e35ff,#ed7402);font-size:13px;text-align:center;box-shadow:0 4px 22px rgba(0,0,0,.35)}
+.countdown{font-variant-numeric:tabular-nums;letter-spacing:1px;font-size:20px;font-weight:1000;background:#0a0610;padding:3px 11px;border-radius:8px;border:1px solid rgba(255,255,255,.3)}
+.timer-section{padding:45px 18px;text-align:center}.timer-box{max-width:760px;margin:auto;padding:32px 20px;border:1px solid rgba(255,255,255,.15);border-radius:24px;background:linear-gradient(145deg,rgba(255,35,157,.12),rgba(142,53,255,.12));box-shadow:0 0 45px rgba(255,35,157,.12)}.timer-kicker{font-weight:1000;color:#ff9ad5;font-size:13px;letter-spacing:1px}.timer-box h2{font-size:clamp(25px,4vw,42px);margin:8px 0 12px}.countdown-large{display:inline-block;font-size:clamp(48px,10vw,86px);line-height:1;padding:10px 22px;border-radius:16px;background:#08050f;border:2px solid rgba(255,35,157,.55);text-shadow:0 0 18px rgba(255,35,157,.5)}.timer-box p{color:var(--muted);margin-bottom:0}
 </style>
 </head>
 <body>
+<div class="offer-timer" aria-label="Oferta por tempo limitado">
+  <div>🔥 <strong>OFERTA ESPECIAL — TERMINE SUA COMPRA ANTES QUE O TEMPO ACABE</strong></div>
+  <div class="countdown" data-countdown>15:00</div>
+</div>
 <div class="top">🔥 <b>32 PACKS RESTANTES</b><span>•</span><b>SOMENTE HOJE</b> <span>•</span> GTA VI CREATOR PACK</div>
 
 <header class="hero">
@@ -121,8 +129,35 @@ section{padding:86px 0;position:relative}.dark2{background:linear-gradient(180de
 <p class="micro">🔒 Checkout processado pela Cakto • Escolha o produto antes de finalizar a compra.</p>
 </div></section>
 
+<section class="timer-section">
+  <div class="timer-box">
+    <div class="timer-kicker">⏰ SOMENTE HOJE • 32 PACKS RESTANTES</div>
+    <h2>Seu preço promocional termina em:</h2>
+    <div class="countdown countdown-large" data-countdown>15:00</div>
+    <p>Garanta seu pack enquanto a oferta estiver disponível.</p>
+  </div>
+</section>
 <footer>FOX AGÊNCIA • GTA VI CREATOR PACK<br>© 2026 FOX AGÊNCIA. Todos os direitos reservados.</footer>
 <script>
 document.querySelectorAll('.sample-media video').forEach(v=>{const p=v.parentElement.querySelector('.play');v.addEventListener('play',()=>p.style.display='none');v.addEventListener('pause',()=>p.style.display='grid');p.addEventListener('click',()=>{v.play().catch(()=>{});});});
+</script>
+
+<script>
+(function(){
+  const KEY='fox_agencia_offer_deadline_v1';
+  const DURATION=15*60*1000;
+  let deadline=localStorage.getItem(KEY);
+  if(!deadline || Number(deadline)<=Date.now()){ deadline=Date.now()+DURATION; localStorage.setItem(KEY,String(deadline)); }
+  const els=document.querySelectorAll('[data-countdown]');
+  function tick(){
+    let left=Math.max(0,Number(deadline)-Date.now());
+    const total=Math.floor(left/1000);
+    const m=String(Math.floor(total/60)).padStart(2,'0');
+    const sec=String(total%60).padStart(2,'0');
+    els.forEach(el=>el.textContent=m+':'+sec);
+    if(left<=0){ els.forEach(el=>el.textContent='00:00'); clearInterval(timer); }
+  }
+  tick(); const timer=setInterval(tick,1000);
+})();
 </script>
 </body></html>
